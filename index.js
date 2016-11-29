@@ -1,6 +1,6 @@
 var express = require("express");
 var app = express();
-
+var sendmail = require('sendmail')({logger:{debug:console.log, info:console.log, warn:console.log, error:console.log}, silent:false});
 var inscrits = [{nom:"david", mail:"david.elbaze.93@gmail.com", with:false, take:false}];
 
 function random (low, high) {
@@ -23,6 +23,9 @@ app.get("/list", function(req, res){
     for(inscrit of inscrits){
         out += inscrit.nom + "<br />";
     }
+
+    sendmail({from:'david.el-baze@emse.fr', to:'david.elbaze.93@gmail.com', subject:'Inscription au Noeloscope', 'html':'Hey !'});
+
     res.send(out);
 });
 
