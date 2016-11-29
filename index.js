@@ -37,7 +37,7 @@ app.get("/debug1_resetwith/:p", function(req, res){
     res.send("<script>window.location=\"/debug1\";</script>");
 });
 
-app.get("/debut1_rm/:p", function(req, res){
+app.get("/debug1_rm/:p", function(req, res){
     n = [];
     for(i of inscrits){
         if(i.nom!=req.params.p)
