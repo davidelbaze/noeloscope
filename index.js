@@ -24,7 +24,6 @@ app.get("/list", function(req, res){
         out += inscrit.nom + "<br />";
     }
 
-    sendmail({from:'david.el-baze@emse.fr', to:'david.elbaze.93@gmail.com', subject:'Inscription au Noeloscope', 'html':'Hey !'});
 
     res.send(out);
 });
@@ -90,6 +89,12 @@ app.get("/debug1_tirage", function(req, res){
         }
     }
     res.send("<script>window.location=\"/debug1\";</script>");
+});
+
+app.get("/debug1_sendmail", function(req, res){
+    for(i of inscrits){
+        sendmail({from:'david.el-baze@emse.fr', to:i.mail, subject:'Ton tirage au Noeloscope', 'html':'Hey ! Tu dois offir un cadeau à ' + i.take});
+    } 
 });
 
 app.listen(5555, function(){
