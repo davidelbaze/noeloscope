@@ -1,7 +1,7 @@
 var express = require("express");
 var app = express();
 var sendmail = require('sendmail')({logger:{debug:console.log, info:console.log, warn:console.log, error:console.log}, silent:false});
-var inscrits = [{nom:"david", mail:"david.elbaze.93@gmail.com", with:false, take:false}];
+var inscrits = [{nom:"david", mail:"david.elbaze.93@gmail.com", with:false, take:false, takenBy:false}];
 
 function random (low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
@@ -14,7 +14,7 @@ app.get('/', function(req, res){
 app.get("/inscription", function(req, res){
     console.log(req.query.nom);
     console.log(req.query.email);
-    inscrits.push({nom: req.query.nom, mail:req.query.email, with:false, take:false});
+    inscrits.push({nom: req.query.nom, mail:req.query.email, with:false, take:false, takenBy:false});
     res.sendFile("public/merci.html", {root:__dirname});
 });
 
@@ -64,7 +64,7 @@ app.get("/debug1_with/:p1/:p2", function(req, res){
 });
 
 function getFree(p){
-    return inscrits.filter(function(i){return (!i.take || i.take == p.nom) && i.nom!=p.nom && (i.nom!=p.with || p.with==false);});
+    return inscrits.filter(function(i){return (i.take!=p.nom) && (!i.takenBy) && i.nom!=p.nom && (i.nom!=p.with || p.with==false);});
 }
 
 app.get("/debug1_resettirage", function(req, res){
@@ -86,6 +86,7 @@ app.get("/debug1_tirage", function(req, res){
             console.log('LE');
             console.log(LE);
             i.take = LE.nom;
+            LE.takenBy = i.nom;
         }
     }
     res.send("<script>window.location=\"/debug1\";</script>");
@@ -95,6 +96,7 @@ app.get("/debug1_sendmail", function(req, res){
     for(i of inscrits){
         sendmail({from:'david.el-baze@emse.fr', to:i.mail, subject:'Ton tirage au Noeloscope', 'html':'Hey ! Tu dois offir un cadeau à ' + i.take});
     } 
+	res.send("ok")
 });
 
 app.listen(5555, function(){
